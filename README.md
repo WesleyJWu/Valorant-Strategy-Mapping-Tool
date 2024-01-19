@@ -50,6 +50,10 @@ From the Main Menu screen, Users can select three different paths to access the 
 
 Each path contains step-by-step directions to successfully reach the Mapping Tool.
 
+<p align="middle">
+  <img width="600" alt="main_menu_screen" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/2de366d7-0ac0-4885-9d06-1db26ed64579">
+</p>
+
 ### **Mapping Tool**
 
 Users are provided an intuitive, user-friendly interface to accurately place agents and their abilities onto any Valorant map, to formulate and refine new strategies as Attackers or Defenders. To reduce clutter and improve visibility, only the 5 most recently selected agents will have their abilities shown.
@@ -60,6 +64,10 @@ Additional key features include:
 - Taking notes with dynamic scrolling
 - Saving the agents, abilities, their locations, and notes into a file
 - Downloading and exporting the file as a pdf
+
+<p align="middle">
+  <img width="800" alt="mapping_tool_ex" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/bb6be56f-55b4-4e82-94c9-186457d1325f">
+</p>
 
 ### **Creating a New File**
 
@@ -76,6 +84,11 @@ Other key features within the Directories Page when saving a new file include:
   - Last viewed date
 - Deleting an existing file
 
+<p align="middle">
+  <img width="600" alt="new_file_screen" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/244c2699-7588-4252-b286-c57fb93d0337">
+  <img width="600" alt="new_file_saving_file" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/4b6a9e57-9d46-4ced-a0bf-5e924509cfe1">
+  <img width="600" alt="new_file_mapping_tool" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/efcda752-314e-49b1-8dc4-5661bf9d5dcb">
+</p>
 
 ### **Loading a File**
 
@@ -91,6 +104,10 @@ Other key features within the Directories Page when loading a file include:
   - Last viewed date
 - Deleting an existing file
 
+<p align="middle">
+  <img width="800" alt="load_file_screen" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/3792f397-f9eb-4ddc-b5f6-3494ab94b4c4">
+  <img width="800" alt="load_file_ex" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/1c726c59-f0db-407b-a746-b90babdb6b13">
+</p>
 
 ### **Analyzing a Video**
 
@@ -112,18 +129,39 @@ My algorithm uses computer vision, specifically template matching, to:
 1. Capture screenshots at the start of each round, which is when the round clock in the video resets to 1 minute and 39 seconds
 2. Find the agents and their locations in each screenshot’s minimap, after the video has ended and all the screenshots are gathered
 
+<p align="middle">
+  <img width="600" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/baad5982-26e3-4355-a410-981c0e8af042" alt="starting_round_screenshot">
+  <img width="300" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/b7759f80-dd68-45f0-a2cb-6f945ad354a4" alt="minimap_screenshot">
+</p>
+
 The agents' locations will then be resized to be in the same relative positive in the Mapping Tool’s map as the screenshot’s minimap, before being added to a new file. There will be a new file for each round in the video, and all the files will be placed in a new folder. 
 
 More information about my computer vision algorithm can be found in "**[Computer Vision Details](#computer-vision-details)**".
-
 
 #### ***Instructions to Analyze a Video***
 
 Users can only analyze a video from the Main Menu screen. Prior to analysis, the Users need to select a video file in mp4 format from their computer, choose the appropriate map, and specify the Attacking and Defending agents to detect for.
 
+<p align="middle">
+  <img width="800" alt="video_analysis_starting_screen" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/89b9e34b-1da6-49e8-9be2-a9c2040c39ae">
+</p>
+
 After these initial selections, Users are then guided to the Directories Page, where they will need to choose the save location for the new folder and files. 
 
+<p align="middle">
+  <img width="800" alt="video_analysis_directories_page" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/68f83e78-fe3a-4bfa-bd3e-70aaddd3eb5a">
+</p>
+
 Video analysis commences once the Users select the “Save” button in the Directories Page. Once the analysis is complete and the folder and its associated files are generated, the Users may now open the new folder and select any of its files to view in the Mapping Tool. These files will prepopulate the Defending agents onto the map in the Mapping Tool and attach the round screenshot in the toolbar for side-by-side comparison.
+
+<p align="middle">
+  <img width="600" alt="video_analysis_new_folder" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/e3baffb2-6ee2-4c6c-b043-11b12529f6c4">
+  <img width="600" alt="video_analysis_new_files" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/a244de67-3311-4c17-aed9-834dc2601515">
+</p>
+
+<p align="middle">
+  <img width="800" alt="video_analysis_round1" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/b66b1b94-da10-41e6-99ce-f8e2b1169131">
+</p>
 
 ---
 
