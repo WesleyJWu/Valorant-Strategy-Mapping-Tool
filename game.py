@@ -5,26 +5,26 @@ from src.game_states.new_file import New_Doc
 from src.game_states.analyze_vod import Analyze_VOD
 from src.game_states.directories import Directories
 from src.game_states.gameplay import Gameplay
-
+from src.game_states.map_boundaries import Map_Boundaries
 
 """
 Game State Manager:
-- Manages which Game States are in the Stack
+- Manages which Game States are on the stack
 - Manages the Game Loop
 - Switches between Games States
 
-There are 5 Game States:
+There are 6 Game States:
 - Main Menu State
 - New File State
 - Directories State
 - Analyze Video State
+- Map Boundaries State
 - Gameplay State
-
 """
 
 class Game_State_Manager():
     def __init__(self):
-        # Initializing pygame
+        # Initializing Pygame
         pygame.init()
         self.screen = pygame.display.set_mode((const.DISPLAY_WIDTH, const.DISPLAY_HEIGHT))
         pygame.display.set_caption("Valorant Strategy Mapping Tool")
@@ -40,7 +40,7 @@ class Game_State_Manager():
     def game_loop(self):
         while self.running:
 
-            # Pass in the events to the Game State at the top of the Stack
+            # Pass in the events to the Game State at the top of the stack
             events = pygame.event.get()
             self.state_stack[-1].handle_events(events)
             self.state_stack[-1].update()
@@ -51,6 +51,7 @@ class Game_State_Manager():
             # Limit the FPS to 60
             self.time_delta = (self.clock.tick(60))/1000
     
+
     """ Helper Functions: """
     def return_to_main_menu(self):
         while len(self.state_stack) != 1:
@@ -71,6 +72,8 @@ class Game_State_Manager():
             new_state = Directories(self, **kwargs)
         elif (state == "Gameplay"):
             new_state = Gameplay(self, **kwargs)
+        elif (state == "Map Boundaries"):
+            new_state = Map_Boundaries(self, **kwargs)
 
         self.state_stack.append(new_state)
         # print(len(self.state_stack))
@@ -78,6 +81,9 @@ class Game_State_Manager():
     def return_to_prev_state(self):
         self.state_stack.pop()
         # print(len(self.state_stack))
+
+    def prev_state_status(self):
+        return self.state_stack[-2].safe_to_load()
 
     def update_state_info(self, **kwargs):
         if (self.stored_state):
@@ -91,10 +97,10 @@ class Game_State_Manager():
 
     def enter_stored_state(self):
         self.state_stack.append(self.stored_state)
-        
+
     def reset_stored_state(self):
         self.stored_state = None
-    
+
     def exit(self):
         self.running = False
 

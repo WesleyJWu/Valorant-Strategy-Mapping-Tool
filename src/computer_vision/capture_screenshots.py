@@ -62,23 +62,18 @@ def capture_start_of_rounds(full_video_path, folder_name, current_path ):
 
                 # Copies the round number to the bottom left of the Mini-Map screenshot
                 round_number = img_RGB[0:75, 920:1000]
-                minimap = img_RGB[25:430, 0:430]
-                minimap[330:405, 0:80] = round_number
-               
-                cv2.imwrite(new_folder_path + f"/{folder_name}_Rnd_{round_counter}.png", minimap)
+                minimap = img_RGB[25:480, 0:480]
+                minimap[380:455, 0:80] = round_number
+
+                cv2.imwrite(new_folder_path + f"/Rnd_{round_counter}.png", minimap)
                 # print("Screenshot was capture for Round: ", round_counter)
 
                 frame = img_RGB
 
-            # Display each frame
-            cv2.imshow("Frame", frame)
+            # # Display each frame
+            # cv2.imshow("Frame", frame)
 
             # if cv2.waitKey(1) & 0xFF == ord('q'):
-            #     # waitkey(1) means wait 1 millisecond
-            #     #   - if nothing happens in 1 millisecond, then move on
-            #     #   - if you press a key within that 1 millisecond, then check to see if
-            #     #   you pressed 'q'
-            #     #       - if it is q, then break out of the while loop
             #     break
         
         else:

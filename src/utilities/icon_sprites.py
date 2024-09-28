@@ -14,6 +14,7 @@ class Icon(pygame.sprite.Sprite):
         self.border = border
         self.selectable = selectable
         self.moveable = moveable
+        self.selected_status = False
 
         file_path = os.path.abspath(__file__)
         utils_direc_path = os.path.dirname(file_path)
@@ -79,12 +80,19 @@ class Icon(pygame.sprite.Sprite):
 
     def drawSelection(self, selected):
         if selected:
-            pygame.draw.rect(self.image, "white", [0, 0, self.image.get_width(), self.image.get_height()], 2)
+            if self.selected_status is True:
+                return
+            box = pygame.Surface((self.rect.width, self.rect.height))
+            box.fill("black")
+            box.set_alpha(125)
+            self.image.blit(box, (0,0))
+            self.selected_status = True
         else:
+            self.selected_status = False
             self.image = self.loadAndScaleIMGWithBackgroundColor()
             if self.border == True:
                 pygame.draw.rect(self.image, "black", [0, 0, self.image.get_width(), self.image.get_height()], 1)
-    
+
     def changeTeams(self, newTeam, newColorBackground, newColorSubject):
         # Change the team name and background color
         self.team = newTeam
@@ -99,5 +107,19 @@ class Icon(pygame.sprite.Sprite):
     
     def get_current_loc(self):
         return [self.rect.centerx, self.rect.centery]
+
+    def get_hit_box_coords(self, direction):
+        if direction == "center":
+            return self.rect.center
+        elif direction == "midleft":
+            return self.rect.midleft
+        elif direction == "midtop":
+            return self.rect.midtop
+        elif direction == "midright":
+            return self.rect.midright
+        elif direction == "midbottom":
+            return self.rect.midbottom
+        else:
+            return 0,0
 
 

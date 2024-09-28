@@ -32,17 +32,22 @@ AGENT_SECOND_ROW = 118
 UTILITY_HEIGHT_WIDTH = 36
 UTILITY_FIRST_ROW = AGENT_SECOND_ROW + AGENT_HEIGHT_WIDTH + 5
 
-AGENT_LIST = ["astra", "breach", "brimstone", "chamber", "cypher", "deadlock", "fade", "gekko", "harbor", "jett", "kayo", "killjoy", "neon", "omen", "phoenix", "raze", "reyna", "sage", "skye", "sova", "viper", "yoru"]
+AGENT_LIST = ["astra", "breach", "brimstone", "chamber", "clove", "cypher", "deadlock", "fade", "gekko", "harbor", "iso", "jett", "kayo", 
+"killjoy", "neon", "omen", "phoenix", "raze", "reyna", "sage", "skye", "sova", 
+"viper", "vyse", "yoru",
+]
 AGENT_TO_UTILITY_DICT = {
     "astra": ["astra_star", "astra_nova_pulse", "astra_nebula", "astra_gravity_well", "astra_cosmic_divide"],
     "breach": ["breach_aftershock", "breach_fault_line", "breach_flashpoint", "breach_rolling_thunder"],
     "brimstone": ["brimstone_incendiary", "brimstone_orbital_strike", "brimstone_smoke", "brimstone_stim_beacon"],
     "chamber": ["chamber_headhunter", "chamber_rendezvous", "chamber_tour_de_force", "chamber_trademark"],
+    "clove": ["clove_meddle", "clove_not_dead_yet", "clove_pick_me_up", "clove_ruse"],    
     "cypher": ["cypher_cage", "cypher_neural_theft", "cypher_spycam", "cypher_trapwire"],
     "deadlock": ["deadlock_annihilation", "deadlock_barrier_mesh", "deadlock_gravnet", "deadlock_sonic_sensor"],
     "fade": ["fade_haunt", "fade_nightfall", "fade_prowler", "fade_seize"],
     "gekko": ["gekko_dizzy", "gekko_mosh_pit", "gekko_thrash", "gekko_wingman"],
     "harbor": ["harbor_cascade", "harbor_cove", "harbor_high_tide", "harbor_reckoning"],
+    "iso": ["iso_contingency", "iso_double_tap", "iso_kill_contract", "iso_undercut"],
     "jett": ["jett_blade_storm", "jett_cloudburst", "jett_tailwind", "jett_updraft"],
     "kayo": ["kayo_flash", "kayo_fragment", "kayo_nullcmd", "kayo_zeropoint"],
     "killjoy": ["killjoy_alarmbot", "killjoy_lockdown", "killjoy_nanoswarm", "killjoy_turret"],
@@ -55,5 +60,6 @@ AGENT_TO_UTILITY_DICT = {
     "skye": ["skye_regrowth", "skye_seekers", "skye_guiding_light", "skye_trailblazer"],
     "sova": ["sova_hunters_fury", "sova_owl_drone", "sova_recon_bolt", "sova_shock_bolt"],
     "viper": ["viper_pit", "viper_poison_cloud", "viper_snake_bite", "viper_wall"],
+    "vyse": ["vyse_shear", "vyse_arc_rose", "vyse_razorvine", "vyse_steel_garden"],
     "yoru": ["yoru_blindside", "yoru_clone", "yoru_dimensional_drift", "yoru_gatecrash"]
 }

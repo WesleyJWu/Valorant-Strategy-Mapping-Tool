@@ -28,19 +28,18 @@ class Button():
 
     def draw_on_screen(self, screen):
         if (not self.hidden):
-            pygame.draw.rect(screen, (220,220,220), self.button_rect, width=0) 
+            pygame.draw.rect(screen, (220,220,220), self.button_rect, width=0)
 
         if self.on:
-            pygame.draw.rect(screen, (176,196,222), self.button_rect, width=0) 
+            pygame.draw.rect(screen, (105,105,105), self.button_rect, width=0)
         elif self.shading:
-            pygame.draw.rect(screen, (176,196,222), self.button_rect, width=0) 
+            pygame.draw.rect(screen, (128,128,128), self.button_rect, width=0)
 
         if (not self.hidden):
             pygame.draw.rect(screen, (0,0,0), self.button_rect, width=2)
             screen.blit(self.textSurf, self.text_rect)
     
     def is_button_clicked(self, mouse_loc):
-        # If the mouse location collides with the Button Rectangle, then return True
         return (self.button_rect.collidepoint(mouse_loc))
 
     def is_mouse_over_button(self, mouse_loc):

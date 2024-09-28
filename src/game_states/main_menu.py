@@ -8,7 +8,7 @@ from src.game_states.base_state import BaseState
 class Main_Menu(BaseState):
     def __init__(self, game):
 
-        # Initialiazing the Base Class
+        # Initializing the Base Class
         super().__init__(game)
 
         self.prepare_surfs_and_rects()
@@ -30,7 +30,7 @@ class Main_Menu(BaseState):
                         self.game.enter_new_state("Analyze VOD")
                     # Check if the User selected the Quit button
                     elif self.quit_button.is_button_clicked(event.pos):
-                        self.game.running = False
+                        self.game.exit()
         
     def update(self):
         # Checks if the mouse is hovering over the buttons

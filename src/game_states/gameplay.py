@@ -1,19 +1,24 @@
 import pygame
+import math
 import os
+import cv2
 import json
 import datetime
 import src.utilities.constants as const
-from src.utilities.textbox import pygametextboxinput as pyTxtBx
+import src.utilities.textbox.pygametextboxinput as pyTxtBx
 
 from src.game_states.base_state import BaseState
 from src.utilities.icon_sprites import Icon
 from src.utilities.button import Button
 from src.utilities.generate_PDF import create_and_download_PDF
 
+
+
 """ Gameplay Game State """
 
 class Gameplay(BaseState):
     def __init__(self, game, title, map, file_path_to_save_to, date_created = "", saved_data = None):
+
         # Initializing the Base Class
         super().__init__(game)
         
@@ -22,36 +27,42 @@ class Gameplay(BaseState):
         self.file_path_to_save_to = file_path_to_save_to
         self.date_created = date_created
         self.saved_data = saved_data
-
         self.screenshot = False
         self.possible_screenshot_path=""
         self.events = []
         self.iconSelected = None
         self.last_clicked_agent_icon = None
         self.most_recent_clicked_agent_icon = None
-        self.recently_selected_agent_names = []
         self.prev_team = "DEF"
         self.new_team = "DEF"
         self.team_dict = {"ATK": const.PALE_VIOLET_RED, "DEF": const.PALE_GREEN_3}
+        self.recently_selected_agent_names = []
+        self.agents_in_a_row = 11
+        self.agent_row = 0
+        self.max_agent_row = math.ceil(len(const.AGENT_LIST)/11) - 1
 
-        # Create Textbox w/ Input
+        # Create Textboxes
         self.text_box = pyTxtBx.TextInputBox(837, 574, font_family='arial', font_size=20, max_width= 342 - 12 + 270, max_height= 100 + 95, text_color="black", cursor_color="black")
         self.editingTextBox = False
+        self.file_text_box = pyTxtBx.TextInputBox(85,26, font_family="arial", font_size=22, max_width=225, max_height=30, text_color="black", cursor_color="black")
+        self.file_text_box.set_text(self.file_title)
 
         self.prepare_surfs_and_rects()
+
+        # Create Sprite Groups
         self.load_sprite_groups()
+
         # Load in the Saved Data, if it exists
         if (self.saved_data):
             self.load_saved_game()
 
+
     def handle_events(self, events):
         self.events = events
         for event in events:
-
             if event.type == pygame.QUIT:
                 self.save_to_file()
                 self.game.exit()
-
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     # Check if the User selected the Atk team button
@@ -81,7 +92,8 @@ class Gameplay(BaseState):
                     elif (self.load_file_button.is_button_clicked(event.pos)):
                         self.save_to_file()
                         # Create and Enter a Directories Game State
-                        self.game.enter_new_state("Directories", creating_new_file=False)
+                        path_to_load = self.file_path_to_save_to.split("Valorant_Personal_Project_Github/")[1]
+                        self.game.enter_new_state("Directories", path=path_to_load, creating_new_file=False)
 
                     # Check if the User selected the Save icon
                     elif (self.save_button.is_button_clicked(event.pos)):
@@ -91,6 +103,14 @@ class Gameplay(BaseState):
                     elif (self.download_button.is_button_clicked(event.pos)):
                         self.save_to_file()
                         self.download_pdf()
+
+                    # Check if the User interacted with the Agent Table's arrows
+                    elif (self.down_arrow_button.is_button_clicked(event.pos) and self.agent_row != self.max_agent_row - 1):
+                            self.agent_row += 1
+                            self.update_agent_table()
+                    elif (self.up_arrow_button.is_button_clicked(event.pos) and self.agent_row != 0):
+                            self.agent_row -= 1
+                            self.update_agent_table()
 
                     # Check if the User selected on the Agent Icons in the Table
                     for agent in self.agentGroupTable:
@@ -145,10 +165,13 @@ class Gameplay(BaseState):
         self.load_file_button.is_mouse_over_button(pygame.mouse.get_pos())
         self.save_button.is_mouse_over_button(pygame.mouse.get_pos())
         self.download_button.is_mouse_over_button(pygame.mouse.get_pos())
+        self.down_arrow_button.is_mouse_over_button(pygame.mouse.get_pos())
+        self.up_arrow_button.is_mouse_over_button(pygame.mouse.get_pos())
 
-        # Update the TextBox if self.editingTextBox is True
+        # Update the TextBoxes
         self.text_box.update(self.events, self.editingTextBox)
-        
+        self.file_text_box.update(self.events, False)
+
         # Check if the User changed Teams
         if (self.prev_team != self.new_team):
             # print(f"Changing Team from {self.prev_team} to self.new_team")
@@ -160,12 +183,10 @@ class Gameplay(BaseState):
             if (self.last_clicked_agent_icon != None):
                 self.last_clicked_agent_icon.drawSelection(True)
 
-        # Draw a border around the icon the mouse is selecting
         if self.iconSelected != None:
             self.iconSelected.drawSelection(True)
         
         if self.most_recent_clicked_agent_icon != self.last_clicked_agent_icon:
-            # Remove the border around the previously selected Agent Icon and draw a border around the currently selected agent icon
             if self.last_clicked_agent_icon != None:
                 self.last_clicked_agent_icon.drawSelection(False)
             self.last_clicked_agent_icon = self.most_recent_clicked_agent_icon
@@ -189,23 +210,25 @@ class Gameplay(BaseState):
                         self.utilityGroupRows.add(Icon(list_agent_utility[utility_index], "utility", utility_loc, self.new_team, colorBackground= self.team_dict[self.new_team]))
 
     def prepare_surfs_and_rects(self):
-        # Create Buttons
+
+       # Create Buttons
         self.create_buttons()
 
         file_path = os.path.abspath(__file__)
         game_states_direc_path = os.path.dirname(file_path)
         src_directory_path = os.path.dirname(game_states_direc_path)
-        project_root = os.path.dirname(src_directory_path)
-        trashcan_img_path = os.path.join(project_root, "assets/misceallanous/trashcan.png")
-        map_template_img_path = os.path.join(project_root, f"assets/maps/{self.map}.png")
-        save_img_path = os.path.join(project_root, "assets/misceallanous/save_icon.png")
-        download_img_path = os.path.join(project_root, "assets/misceallanous/download_icon.png")
+        self.project_root = os.path.dirname(src_directory_path)
+        trashcan_img_path = os.path.join(self.project_root, "assets/misceallanous/trashcan.png")
+        map_template_img_path = os.path.join(self.project_root, f"assets/maps/{self.map}.png")
+        save_img_path = os.path.join(self.project_root, "assets/misceallanous/save_icon.png")
+        download_img_path = os.path.join(self.project_root, "assets/misceallanous/download_icon.png")
+        arrow_img_path = os.path.join(self.project_root, "assets/misceallanous/click_arrow_icon.png")
 
         # Create a background color Surface for the Map
         self.backgroundColorForMapSurf = pygame.Surface((const.MAP_WIDTH, const.MAP_HEIGHT))
         self.backgroundColorForMapSurf.fill("slategray4")
 
-        # Create a background color Surface for the Toolbar
+        # Create a background color Surface for my toolbar selection
         self.backgroundColorForToolbarSurf = pygame.Surface((const.TOOLBAR_WIDTH, const.TOOLBAR_HEIGHT))
         self.backgroundColorForToolbarSurf.fill("darkgray")
         pygame.draw.line(self.backgroundColorForToolbarSurf, "seashell2", (0, 0), (0, const.MAP_HEIGHT), width=2)
@@ -214,160 +237,197 @@ class Gameplay(BaseState):
         self.trashcanSurf = pygame.image.load(trashcan_img_path).convert_alpha()
         self.trashcanRect = self.trashcanSurf.get_rect(center = (const.MAP_WIDTH - 50, const.MAP_HEIGHT - 50))
 
-        # Load in the Map image and scale it down
+        # Load in the Map image 
         self.mapTemplateSurf = pygame.image.load(map_template_img_path).convert_alpha()
-        self.mapTemplateSurf = pygame.transform.smoothscale(self.mapTemplateSurf, (const.MAP_WIDTH, const.MAP_HEIGHT))
 
-        # Load in the Save and Download Icons
+        # Load in the Save and Download Pics
         self.save_surf = pygame.image.load(save_img_path).convert_alpha()
         self.save_surf = pygame.transform.smoothscale(self.save_surf, (48,48))
         self.download_surf = pygame.image.load(download_img_path).convert_alpha()
         self.download_surf = pygame.transform.smoothscale(self.download_surf, (45,45))
+
+        # Load in the Click-Arrow icon
+        self.down_arrow_surf = pygame.image.load(arrow_img_path).convert_alpha()
+        self.up_arrow_surf = pygame.transform.rotate(self.down_arrow_surf, 180)
 
     def draw_on_screen(self, screen):
         screen.blit(self.backgroundColorForMapSurf, (0,0))
         screen.blit(self.backgroundColorForToolbarSurf, (const.MAP_WIDTH, 0))
         screen.blit(self.mapTemplateSurf, (0,0))
         screen.blit(self.trashcanSurf, self.trashcanRect)
-        pygame.draw.rect(screen, "seashell2", [0, 0, const.DISPLAY_WIDTH, const.DISPLAY_HEIGHT], 2, 10, border_top_left_radius= 0, border_top_right_radius=0)
 
-
-        # Draw Title and Map Header
+        # Draw in the Header Rectangles and Borders
         pygame.draw.rect(screen, (255,222,173),[23, 18, 320, 76])
         pygame.draw.rect(screen, (139,69,19), [23, 18, 320, 76], 2, border_top_left_radius= 0, border_top_right_radius=0, border_bottom_left_radius=0, border_bottom_right_radius=0)
-        self.draw_text(screen, f"File Name: {self.file_title}", pygame.font.SysFont("arial", 25), (30,38), "black", "midleft")
+        
+        # Add the Title and Map Header
+        self.draw_text(screen, f"File: {self.file_title}", pygame.font.SysFont("arial", 25), (30,38), "black", "midleft", trailing= "active_file_name")
         self.draw_text(screen, f"Map: {self.map}", pygame.font.SysFont("arial", 25), (30, 72), "black", "midleft")
 
-        # Draw the Agents Header
-        pygame.draw.rect(screen, (255,222,173),[810, 10, 88, 32])
-        pygame.draw.rect(screen, (139,69,19), [810, 10, 88, 32], 2, border_top_left_radius= 0, border_top_right_radius=0, border_bottom_left_radius=0, border_bottom_right_radius=0)
-        self.draw_text(screen, "Agents", pygame.font.SysFont("arial", 23), (817, 25), "black", "midleft" )
+        # Draw File textbox in
+        pygame.draw.rect(screen, "white", [81, 22, 230, 30])
+        pygame.draw.rect(screen, "black", [81, 22, 230, 30], 1)
+        self.file_text_box.render(screen)
 
-        # Draw the Agent Utility Header
-        pygame.draw.rect(screen, (255,222,173),[810, 163, 138, 32])
-        pygame.draw.rect(screen, (139,69,19), [810, 163, 138, 32], 2, border_top_left_radius= 0, border_top_right_radius=0, border_bottom_left_radius=0, border_bottom_right_radius=0)
-        self.draw_text(screen, "Agent Utility", pygame.font.SysFont("arial", 23), (const.MAP_WIDTH + 17, const.AGENT_SECOND_ROW + 60), "black", "midleft")
+        # Add the Agents Header
+        pygame.draw.rect(screen, (255,222,173),[810, 25, 88, 32])
+        pygame.draw.rect(screen, (139,69,19), [810, 25, 88, 32], 2, border_top_left_radius= 0, border_top_right_radius=0, border_bottom_left_radius=0, border_bottom_right_radius=0)
+        self.draw_text(screen, "Agents", pygame.font.SysFont("arial", 23), (817, 40), "black", "midleft" )
+
+        # Add in the Arrow Icons
+        if self.agent_row != 0:
+            self.up_arrow_button.draw_on_screen(screen)
+            screen.blit(self.up_arrow_surf, self.up_arrow_surf.get_rect(center=self.up_arrow_button.get_button_rect().center))
+        if self.agent_row != self.max_agent_row - 1:
+            self.down_arrow_button.draw_on_screen(screen)
+            screen.blit(self.down_arrow_surf, self.down_arrow_surf.get_rect(center=self.down_arrow_button.get_button_rect().center))
 
         # Draw the Notes Header
-        pygame.draw.rect(screen, (255,222,173),[810, 519, 100, 42])
-        pygame.draw.rect(screen, (139,69,19), [810, 519, 100, 42], 2, border_top_left_radius= 0, border_top_right_radius=0, border_bottom_left_radius=0, border_bottom_right_radius=0)
-        self.draw_text(screen, "Notes", pygame.font.SysFont("arial", 30), (820, 539), "black", "midleft" )
+        pygame.draw.rect(screen, (255,222,173),[810, 523, 83, 32])
+        pygame.draw.rect(screen, (139,69,19), [810, 523, 83, 32], 2, border_top_left_radius= 0, border_top_right_radius=0, border_bottom_left_radius=0, border_bottom_right_radius=0)
+        self.draw_text(screen, "Notes", pygame.font.SysFont("arial", 23), (820, 539), "black", "midleft" )
 
-        # Draw the notes in the textbox
+        # Add the Agent Utility Header
+        pygame.draw.rect(screen, (255,222,173),[810, 163 + 40, 138, 32])
+        pygame.draw.rect(screen, (139,69,19), [810, 163 + 40, 138, 32], 2, border_top_left_radius= 0, border_top_right_radius=0, border_bottom_left_radius=0, border_bottom_right_radius=0)
+        self.draw_text(screen, "Agent Utility", pygame.font.SysFont("arial", 23), (const.MAP_WIDTH + 17, const.AGENT_SECOND_ROW + 10+ 50 + 40), "black", "midleft")
+
+        # Draw in the background color for the Notes and the border around the Notes
         pygame.draw.rect(screen, "lightblue", [830, 569, 612, 200])
         pygame.draw.rect(screen, "blue", [830, 569, 612, 200], 1)
+
+        # Draw the text on the screen
         self.text_box.render(screen)
+        pygame.draw.rect(screen, "seashell2", [0, 0, const.DISPLAY_WIDTH, const.DISPLAY_HEIGHT], 2, 10, border_top_left_radius= 0, border_top_right_radius=0)
 
-        # Draw the Agent Table and Utility Toolbar
-        self.agentGroupTable.draw(screen)
-        self.utilityGroupRows.draw(screen)
-
-        # Draw the Agent Icons and the Utility Icons on the Map
-        self.agentsOnMap.draw(screen)
-        self.utilityOnMap.draw(screen)
-
-        # Draw the Buttons in
-        self.atk_button.draw_on_screen(screen)
-        self.def_button.draw_on_screen(screen)
-        self.main_menu_button.draw_on_screen(screen)
-        self.new_file_button.draw_on_screen(screen)
-        self.load_file_button.draw_on_screen(screen)
-        # Draw the Save and Download Buttons and Surfs
+        # Draw the tools
         self.save_button.draw_on_screen(screen)
         screen.blit(self.save_surf, self.save_surf.get_rect(center = self.save_button.get_button_rect().center))
         self.download_button.draw_on_screen(screen)
         screen.blit(self.download_surf, self.download_surf.get_rect(center = self.download_button.get_button_rect().center))
 
+        # Draw the Agent Table and Utility Icons
+        self.agentGroupTable.draw(screen)
+        self.utilityGroupRows.draw(screen)
+
+        # Draw the Utility Icons and the Agent Icons on the Map
+        self.utilityOnMap.draw(screen)
+        self.agentsOnMap.draw(screen)
+
+        # Draw the other Buttons in:
+        self.atk_button.draw_on_screen(screen)
+        self.def_button.draw_on_screen(screen)
+        self.main_menu_button.draw_on_screen(screen)
+        self.new_file_button.draw_on_screen(screen)
+        self.load_file_button.draw_on_screen(screen)
+
         self.screen_copy = screen
 
-        # Draw in the corresponding screenshot from the video, if there exists one
+        # Blit in the corresponding screenshot for that round if there exists one
         if (self.screenshot):
             pygame.draw.rect(self.screenshotSurf, (70,130,180), [0, 0, 300, 300], 2)
             screen.blit(self.screenshotSurf, self.screenshotRect)
+     
+
+    def safe_to_load(self):
+        return os.path.isfile(f"{self.file_path_to_save_to + self.file_title}.json")
 
 
     """ Helper Fxns """
 
     def load_sprite_groups(self):
-        # Create the Agent Sprite Group for the Agent Table and add the Agent Icons to it
+        # Create the Agent Sprite Group for the Agent Table
         self.agentGroupTable = pygame.sprite.Group()
-        for index in range(len(const.AGENT_LIST)):
+        for index in range(22):
+            # Create all the new Agent (Sprite) classes and add them all into the Agent (Sprite) Group 
             loc = self.starting_location("Agent Table", index)
             self.agentGroupTable.add(Icon(const.AGENT_LIST[index], "agent", loc, self.prev_team, colorBackground=self.team_dict[self.prev_team]))
-        
-        # Create the Utility Sprite Group for the Toolbar
-        self.utilityGroupRows = pygame.sprite.Group()
 
-        # Create the Sprite Groups for the Agent Icons and Utility Icons on the Map 
+        # create the other Sprite Groups
         self.agentsOnMap = pygame.sprite.Group()
+        self.utilityGroupRows = pygame.sprite.Group()
         self.utilityOnMap = pygame.sprite.Group()
 
     def starting_location(self, label, index):
         centerX = 0
         centerY = 0
         displacement = 0
-        y_gap = 60
+        y_gap = 50
+        y_more = 40
 
-        if (label == "Agent Table"):
-            if (index < (len(const.AGENT_LIST)//2)):
+        if (label == "Toolbar"):
+            centerX = const.DISPLAY_WIDTH - 60
+            centerY = 35 + (50 * index) + 200
+        elif (label == "Agent Table"):
+            if (index < self.agents_in_a_row):
                 centerX = 32 + const.MAP_WIDTH + ((const.AGENT_HEIGHT_WIDTH + 2) * index)
-                centerY = const.AGENT_FIRST_ROW
+                centerY = const.AGENT_FIRST_ROW + 27
             else:
-                centerX = 32 + const.MAP_WIDTH + ((const.AGENT_HEIGHT_WIDTH + 2) * (index - len(const.AGENT_LIST)//2))
-                centerY = const.AGENT_SECOND_ROW
-
+                centerX = 32 + const.MAP_WIDTH + ((const.AGENT_HEIGHT_WIDTH + 2) * (index - self.agents_in_a_row))
+                centerY = const.AGENT_SECOND_ROW + 27
         elif (label == "Utility Row 1"):
             if (index != 0):
                 displacement = 17
             centerX = 32 + const.MAP_WIDTH + displacement + ((const.UTILITY_HEIGHT_WIDTH + 7) * (index))
-            centerY = const.AGENT_SECOND_ROW + 113
-
+            centerY = const.AGENT_SECOND_ROW + 113 + y_more
         elif (label == "Utility Row 2"):
             if (index != 0):
                 displacement = 17
             centerX = 32 + const.MAP_WIDTH + displacement + ((const.UTILITY_HEIGHT_WIDTH + 7) * (index))
-            centerY = y_gap + const.AGENT_SECOND_ROW + 113
-
+            centerY = y_gap + const.AGENT_SECOND_ROW + 113 + y_more
         elif (label == "Utility Row 3"):
             if (index != 0):
                 displacement = 17
             centerX = 32 + const.MAP_WIDTH + displacement + ((const.UTILITY_HEIGHT_WIDTH + 7) * (index))
-            centerY = 2*y_gap + const.AGENT_SECOND_ROW + 113
-
+            centerY = 2*y_gap + const.AGENT_SECOND_ROW + 113 + y_more
         elif (label == "Utility Row 4"):
             if (index != 0):
                 displacement = 17
             centerX = 32 + const.MAP_WIDTH + displacement + ((const.UTILITY_HEIGHT_WIDTH + 7) * (index))
-            centerY = 3*y_gap + const.AGENT_SECOND_ROW + 113
-
+            centerY = 3*y_gap + const.AGENT_SECOND_ROW + 113 + y_more
         elif (label == "Utility Row 5"):
             if (index != 0):
                 displacement = 17
             centerX = 32 + const.MAP_WIDTH + displacement + ((const.UTILITY_HEIGHT_WIDTH + 7) * (index))
-            centerY = 4*y_gap + const.AGENT_SECOND_ROW + 113
-
+            centerY = 4*y_gap + const.AGENT_SECOND_ROW + 113 + y_more
         return centerX, centerY
+
+    def update_agent_table(self):
+        self.agentGroupTable.empty()
+        starting_agent_index = self.agent_row * self.agents_in_a_row
+        ending_agent_max_range = starting_agent_index + self.agents_in_a_row*2
+        if ending_agent_max_range > len(const.AGENT_LIST):
+            ending_agent_max_range = len(const.AGENT_LIST)
+        for index in range(starting_agent_index, ending_agent_max_range):
+            loc = self.starting_location("Agent Table", index - (11 * self.agent_row))
+            self.agentGroupTable.add(Icon(const.AGENT_LIST[index], "agent", loc, self.prev_team, colorBackground=self.team_dict[self.prev_team]))
+
     
     def create_buttons(self):
         # Create the Atk and Def Buttons
-        self.atk_button = Button("ATK", pygame.font.SysFont("arial", 18), (947, 25), (63, 28), "red")
-        self.def_button = Button("DEF", pygame.font.SysFont("arial", 18), (1008, 25), (63, 28), (0,128,0))
+        self.atk_button = Button("ATK", pygame.font.SysFont("arial", 18), (1117-170 + 250, 45), (63, 28), "red")
+        self.def_button = Button("DEF", pygame.font.SysFont("arial", 18), (1178-170 + 250, 45), (63, 28), (0,242,0))
         self.def_button.const_selected_button(True)
 
         # Create the Main Menu, New File, and Load File Buttons
-        self.main_menu_button = Button("Main Menu", pygame.font.SysFont("arial", 18), (1397, 31), (115, 35))
-        self.new_file_button = Button("New Doc", pygame.font.SysFont("arial", 18), (1397, 73), (115, 35))
-        self.load_file_button = Button("Load Doc", pygame.font.SysFont("arial", 18), (1397, 115), (115, 35))
+        self.main_menu_button = Button("Main Menu", pygame.font.SysFont("arial", 18), (1247 + 150, 31), (115, 35))
+        self.new_file_button = Button("New File", pygame.font.SysFont("arial", 18), (1247 + 150, 73), (115, 35))
+        self.load_file_button = Button("Load File", pygame.font.SysFont("arial", 18), (1247 + 150, 115), (115, 35))
 
         # Create the Save Button and the Download Button
-        self.save_button = Button("Save", pygame.font.SysFont("arial", 18), (1369, 169), (55,55), hidden=True)
-        self.download_button = Button("Download", pygame.font.SysFont("arial", 18), (1419, 169), (55,55), hidden=True)
+        self.save_button = Button("Save", pygame.font.SysFont("arial", 18), (1247 + 100 + 10 + 20 - 8, 115+42+20 - 8), (55,55), hidden=True)
+        self.download_button = Button("Download", pygame.font.SysFont("arial", 18), (1247 + 150 + 23 + 7 - 8, 115+42+20 - 8), (55,55), hidden=
+        True)
+        
+        # Create the Down and Up Arrow Buttons
+        self.down_arrow_button = Button("Down", pygame.font.SysFont("arial", 18), (1066, 190), (40,30), hidden=True)
+        self.up_arrow_button = Button("Up", pygame.font.SysFont("arial", 18), (1066, 52), (40,30), hidden=True)
 
     def save_to_file(self):
-        # Split the agentsOnMap into 2 distinct Dicts. (Atk Agents and Def Agents)
+        # Split the agentsOnMap into 2 distinct Dicts: Atk Agents and Def Agents
         self.atk_agents = {}
         self.def_agents = {}
-        # Split the utilityOnMap into 2 distinct Dicts. (Atk Utility and Def Utility)
+        # Split the utilityOnMap into 2 distinct Dicts: Atk Utility and Def Utility
         self.atk_utility = {}
         self.def_utility = {}
         # Store the Notes
@@ -375,9 +435,8 @@ class Gameplay(BaseState):
 
         # Cycle through all the Agents on the map
         for agent in self.agentsOnMap:
-            # If an Atk Agent, then add to the atk_agents Dict. with key = agent.name and value = [agent.get_current_loc()]
             if (agent.team == "ATK"):
-                # If this is a new Agent in the Dict., then create a value for it (put the location into a list)
+                # If this is a new Agent in the Dict., then create a value for it (put their location into a list)
                 if (agent.name not in self.atk_agents):
                     self.atk_agents[agent.name] = [agent.get_current_loc()]
                 # Otherwise, append the location to the current key-value pair
@@ -410,8 +469,6 @@ class Gameplay(BaseState):
         current_date = datetime.datetime.now()
         formatted_date = current_date.strftime("%m/%d/%y")
 
-        # Create a Dict[string_label_for_sub_dicts] --> sub_Dict[string_agent/utility_name] --> [[string_agent/utility_loc], [string_agent/utility_loc], ...]
-        # For Map, File Path, Date Created, Viewed Date, and Notes, it's just Dict[key] = value
         file_info = {}
         file_info["map"] = self.map
         file_info["file_path"] = self.file_path_to_save_to
@@ -425,8 +482,6 @@ class Gameplay(BaseState):
 
         with open(f"{self.file_path_to_save_to + self.file_title}.json", "w") as f:
             json.dump(file_info, f, sort_keys= True, indent= 4)
-        # print(f"Saving File: {self.file_path_to_save_to + self.file_title}.json")
-
 
     def load_saved_game(self):
         # Load in the Atk Agents
@@ -477,29 +532,58 @@ class Gameplay(BaseState):
         edited_map_screenshot_path = f"{self.file_path_to_save_to}{self.file_title}.jpg"
         pygame.image.save(edited_map_screenshot, edited_map_screenshot_path)
 
-        # Create the Agents list and Utility list and order them with Atk ones first and then Def ones
+        # Create the 2 lists of Agents and Utility for the Tracker Tables
         list_of_agents_on_map = []
         list_of_utility_on_map = []
+
+        # Loading RGB Map
+        map_callouts_path = os.path.join(self.project_root, f"assets/colored_maps/colored_{self.map}.png")
+        img_BGR_map = cv2.imread(map_callouts_path, cv2.IMREAD_COLOR)
+        img_RGB_map = cv2.cvtColor(img_BGR_map, cv2.COLOR_BGR2RGB)
+
+        # Opening the Map Color Dictionary Json
+        with open(f"assets/map_callouts/{self.map}_callouts.json", "r") as f:
+            color_map = json.load(f)
+
         for agent in self.agentsOnMap:
+            callout_loc = self.find_callout_loc(agent, img_RGB_map, color_map)
+            # print(f"{agent.name} --Coords: {agent.get_current_loc()} Loc: {callout_loc}")
             if (agent.team == "ATK"):
-                list_of_agents_on_map.insert(0,[agent.team, agent.name])
+                list_of_agents_on_map.insert(0,[agent.team, agent.name, callout_loc])
             else:
-                list_of_agents_on_map.append([agent.team, agent.name])
+                list_of_agents_on_map.append([agent.team, agent.name, callout_loc])
+
         for utility in self.utilityOnMap:
+            callout_loc = self.find_callout_loc(utility, img_RGB_map, color_map)
             if (utility.team == "ATK"):
-                list_of_utility_on_map.insert(0,[utility.team, utility.name])
+                list_of_utility_on_map.insert(0,[utility.team, utility.name, callout_loc])
             else:
-                list_of_utility_on_map.append([utility.team, utility.name])
-        list_of_agents_on_map.insert(0,["Team:", "Agent:"])
-        list_of_utility_on_map.insert(0,["Team:", "Utility:"])
+                list_of_utility_on_map.append([utility.team, utility.name, callout_loc])
+
+        list_of_agents_on_map.insert(0,["Team:", "Agent:", "Loc:"])
+        list_of_utility_on_map.insert(0,["Team:", "Utility:", "Loc:"])
 
         # Gather notes
         notes = self.text_box.get_text()
 
-        # Check if there is a screenshot attached to this File
+        # Check to see if there is a screenshot attached to this File
         if (self.screenshot == False):
             self.possible_screenshot_path = None
 
         # Download PDF
         create_and_download_PDF(self.file_title, self.map, edited_map_screenshot_path, list_of_agents_on_map, list_of_utility_on_map, notes, self.possible_screenshot_path)
 
+    # Returns the Callout location for the Agents (or Off-Map as default)
+    def find_callout_loc(self, sprite, img_RGB_map, color_map):
+
+        callout = "Off-Map"
+        counter = 0
+        hit_box = ["center", "midleft", "midtop", "midright", "midbottom"]
+        while callout == "Off-Map" and counter <= 4:
+            col, row = sprite.get_hit_box_coords(hit_box[counter])
+            counter += 1
+            RGB_color = img_RGB_map[row, col]
+            RGB_str = f"({RGB_color[0]}, {RGB_color[1]}, {RGB_color[2]})"
+            callout = color_map.get(RGB_str, "Off-Map")
+        
+        return callout

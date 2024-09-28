@@ -25,10 +25,32 @@ class BaseState(ABC):
 
     """ Helper Functions: """
 
-    def draw_text(self, screen, text, font, loc, text_color, loc_position = "center"):
+    def draw_text(self, screen, text, font, loc, text_color, loc_position = "center", trailing = None):
+        if trailing != None:
+            text = self.shorten_text(text, trailing)
         text_surf = font.render(text, True, text_color)
         text_rect = text_surf.get_rect(center= loc)
         if loc_position == "midleft":
             text_rect = text_surf.get_rect(midleft= loc)
         screen.blit(text_surf, text_rect)
 
+    def shorten_text(self, text, type):
+        if type == "curr_file_name":
+            if len(text) > 23:
+                text = text[:20] + "..."
+        elif type == "prev_folder_name" or type == "prev_file_name":
+            if len(text) > 13:
+                text = text[:7] + "..." + text[-3:]
+        elif type == "selec_file_name":
+            if len(text) > 24:
+                text = text[:18] + "..." + text[-3:]
+        elif type == "active_file_name":
+            if len(text) > 25:
+                text = text[:18] + "..." + text[-4:]
+        elif type == "selec_video_name":
+            if len(text) > 17:
+                text = text[:7] + "..." + text[-7:]
+        return text
+
+    def safe_to_load(self):
+        return True
