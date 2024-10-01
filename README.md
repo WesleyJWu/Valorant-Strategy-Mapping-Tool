@@ -269,9 +269,6 @@ After clicking Next, Users are then guided to the Directories Page, where they w
 </p>
 
 The rest of the video analysis starts once the Users select the “Save” button in the Directories Page. Once the analysis is complete and the folder and its associated files are generated, the Users may now open the new folder and select any of its files to view and verify detection and position accuracy in the Mapping Tool. These files will prepopulate the Attacking and Defending agents onto the map in the Mapping Tool and attach the round screenshot in the toolbar for side-by-side comparison. Then the Users can enter the Directories Page and select the option to "Analyze Folder" to download the map template PNG(s) and 4 CSV files describing the detected Attacking and Defending agents' locations with coordinates and map callouts.
-![Loading_Analyzed_Round_GIF](https://github.com/user-attachments/assets/640523dd-1d60-4749-b358-34193acc12d9)
-![Analyze_Folder](https://github.com/user-attachments/assets/6b5d88df-1583-43a4-b298-d5eb30735a2c)
-![download_folder](https://github.com/user-attachments/assets/f94bc807-02d5-4f28-bcea-a2187ce0dfc3)
 
 <p align="middle">
   <img width="700" alt="Loading_Analyzed_Round_GIF" src="https://github.com/user-attachments/assets/640523dd-1d60-4749-b358-34193acc12d9">
