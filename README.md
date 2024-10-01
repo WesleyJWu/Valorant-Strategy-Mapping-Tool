@@ -114,7 +114,7 @@ From the Main Menu screen, Users can select three different paths to access the 
 Each path contains step-by-step directions to successfully reach the Mapping Tool.
 
 <p align="middle">
-  <img width="600" alt="main_menu_screen" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/2de366d7-0ac0-4885-9d06-1db26ed64579">
+  <img width="600" alt="main_menu_screen" src="README_assets/Main_Menu_Screen.png">
 </p>
 
 ### **Mapping Tool**
@@ -138,8 +138,12 @@ Additional key features include:
   - List of Attacking and Defending abilities ${\textsf{\color{lightGreen}with map callouts}}$
 
 <p align="middle">
-  <img width="700" alt="Mapping_Tool_GIF" src="https://github.com/user-attachments/assets/3d5bbd1c-3f52-4087-b8c0-18734e33a2e3">
-  <img width="500" alt="Mid-Round_PDF_JPG" src="https://github.com/user-attachments/assets/c4c9d40d-551a-431c-893f-f38ec64df8c5">
+  <img width="700" alt="Mapping_Tool_GIF" src="README_assets/Mapping_Tool.gif">
+  <img width="500" alt="Mid-Round_PDF_JPG" src="README_assets/ex_Mid-Round_PDF.jpg">
+</p>
+
+<p align="center">
+(Example of an automatically generated PDF)
 </p>
 
 ### **Creating a New File**
@@ -170,7 +174,7 @@ Other key features within the Directories Page when saving a new file include:
 - Option to delete the right-clicked file or folder
 
 <p align="middle">
-  <img width="700" alt="New_File_GIF" src="https://github.com/user-attachments/assets/b70bd67c-b2d2-4e56-b5ca-76d580c83d95">
+  <img width="700" alt="New_File_GIF" src="README_assets/New_File.gif">
 </p>
 
 ### **Loading a File**
@@ -200,7 +204,7 @@ Other key features within the Directories Page when loading a file include:
 - Option to delete the right-clicked file or folder
 
 <p align="middle">
-  <img width="700" alt="Load_File_GIF" src="https://github.com/user-attachments/assets/12d26c5b-12fb-4236-8f61-35de97aa8b89">
+  <img width="700" alt="Load_File_GIF" src="README_assets/Load_File.gif">
 </p>
 
 ### **Analyzing a Video**
@@ -230,8 +234,8 @@ The agents' locations will then be converted to their relative positions in the 
 More information about my computer vision algorithm can be found in "**[Computer Vision Details](#computer-vision-details)**".
 
 <p align="middle">
-  <img width="600" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/baad5982-26e3-4355-a410-981c0e8af042" alt="starting_round_screenshot">
-  <img width="300" src="https://github.com/WesleyJWu/Valorant-Strategy-Mapping-Tool/assets/112910934/b7759f80-dd68-45f0-a2cb-6f945ad354a4" alt="minimap_screenshot">
+  <img width="600" src="README_assets/ex_Round_Start_Screenshot.png" alt="starting_round_screenshot">
+  <img width="300" src="README_assets/ex_Minimap_Screenshot.png" alt="minimap_screenshot">
 </p>
 
 > [!IMPORTANT]
@@ -265,25 +269,25 @@ Users can only analyze a video from the Main Menu screen. Prior to analysis, the
 After clicking Next, Users are then guided to the Directories Page, where they will need to choose the save location for the new folder and files. 
 
 <p align="middle">
-  <img width="700" alt="Analyze_VOD_Map_Boundaries_GIF" src="https://github.com/user-attachments/assets/3047487b-09f0-464b-8290-6261b40b6902">
+  <img width="700" alt="Analyze_VOD_Map_Boundaries_GIF" src="README_assets/Analyze_VOD_Map_Boundaries.gif">
 </p>
 
 The rest of the video analysis starts once the Users select the “Save” button in the Directories Page. Once the analysis is complete and the folder and its associated files are generated, the Users may now open the new folder and select any of its files to view and verify detection and position accuracy in the Mapping Tool. These files will prepopulate the Attacking and Defending agents onto the map in the Mapping Tool and attach the round screenshot in the toolbar for side-by-side comparison. Then the Users can enter the Directories Page and select the option to "Analyze Folder" to download the map template PNG(s) and 4 CSV files describing the detected Attacking and Defending agents' locations with coordinates and map callouts.
 
 <p align="middle">
-  <img width="700" alt="Loading_Analyzed_Round_GIF" src="https://github.com/user-attachments/assets/640523dd-1d60-4749-b358-34193acc12d9">
+  <img width="700" alt="Loading_Analyzed_Round_GIF" src="README_assets/Loading_Analyzed_Round.gif">
 </p>
 
 <p align="middle">
-  <img width="700" alt="Analyze_Folder" src="https://github.com/user-attachments/assets/6b5d88df-1583-43a4-b298-d5eb30735a2c">
+  <img width="700" alt="Analyze_Folder" src="README_assets/Analyze_Folder.gif">
 </p>
 
 <p align="middle">
-  <img width="700" alt="download_folder" src="https://github.com/user-attachments/assets/f94bc807-02d5-4f28-bcea-a2187ce0dfc3">
+  <img width="700" alt="download_folder" src="README_assets/Download_Folder.png">
 </p>
 
 <h3 align="center">
-  <a href="https://github.com/user-attachments/files/17200793/DEF_callouts.csv">Ex: DEF_callouts.csv</a>
+  <a href="README_assets/ex_DEF_Callouts.csv">Ex: DEF_callouts.csv</a>
 </h3>
 
 ---
