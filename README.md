@@ -138,8 +138,8 @@ Additional key features include:
   - List of Attacking and Defending abilities ${\textsf{\color{lightGreen}with map callouts}}$
 
 <p align="middle">
-  <img width="700" alt="Mapping_Tool_GIF" src="https://github.com/user-attachments/assets/aa99b524-db9a-4f05-bed9-9461f33ed7df">
-  <img width="500" alt="Mid-Round_PDF_JPG" src="https://github.com/user-attachments/assets/0359745a-2092-4628-8439-3a71a0536063">
+  <img width="700" alt="Mapping_Tool_GIF" src="https://github.com/user-attachments/assets/3d5bbd1c-3f52-4087-b8c0-18734e33a2e3">
+  <img width="500" alt="Mid-Round_PDF_JPG" src="https://github.com/user-attachments/assets/c4c9d40d-551a-431c-893f-f38ec64df8c5">
 </p>
 
 ### **Creating a New File**
@@ -170,7 +170,7 @@ Other key features within the Directories Page when saving a new file include:
 - Option to delete the right-clicked file or folder
 
 <p align="middle">
-  <img width="700" alt="New_File_GIF" src="https://github.com/user-attachments/assets/24642eee-6522-4fbe-94a2-271b85b434df">
+  <img width="700" alt="New_File_GIF" src="https://github.com/user-attachments/assets/b70bd67c-b2d2-4e56-b5ca-76d580c83d95">
 </p>
 
 ### **Loading a File**
@@ -200,7 +200,7 @@ Other key features within the Directories Page when loading a file include:
 - Option to delete the right-clicked file or folder
 
 <p align="middle">
-  <img width="700" alt="Load_File_GIF" src="https://github.com/user-attachments/assets/a6bce0b2-e86c-4aff-84ca-20a5e2299d4a">
+  <img width="700" alt="Load_File_GIF" src="https://github.com/user-attachments/assets/12d26c5b-12fb-4236-8f61-35de97aa8b89">
 </p>
 
 ### **Analyzing a Video**
@@ -265,25 +265,28 @@ Users can only analyze a video from the Main Menu screen. Prior to analysis, the
 After clicking Next, Users are then guided to the Directories Page, where they will need to choose the save location for the new folder and files. 
 
 <p align="middle">
-  <img width="700" alt="Analyze_VOD_Map_Boundaries_GIF" src="https://github.com/user-attachments/assets/f27f0a18-3981-4743-a941-af1bbc7e63de">
+  <img width="700" alt="Analyze_VOD_Map_Boundaries_GIF" src="https://github.com/user-attachments/assets/3047487b-09f0-464b-8290-6261b40b6902">
 </p>
 
 The rest of the video analysis starts once the Users select the “Save” button in the Directories Page. Once the analysis is complete and the folder and its associated files are generated, the Users may now open the new folder and select any of its files to view and verify detection and position accuracy in the Mapping Tool. These files will prepopulate the Attacking and Defending agents onto the map in the Mapping Tool and attach the round screenshot in the toolbar for side-by-side comparison. Then the Users can enter the Directories Page and select the option to "Analyze Folder" to download the map template PNG(s) and 4 CSV files describing the detected Attacking and Defending agents' locations with coordinates and map callouts.
+![Loading_Analyzed_Round_GIF](https://github.com/user-attachments/assets/640523dd-1d60-4749-b358-34193acc12d9)
+![Analyze_Folder](https://github.com/user-attachments/assets/6b5d88df-1583-43a4-b298-d5eb30735a2c)
+![download_folder](https://github.com/user-attachments/assets/f94bc807-02d5-4f28-bcea-a2187ce0dfc3)
 
 <p align="middle">
-  <img width="700" alt="Loading_Analyzed_Round_GIF(" src="https://github.com/user-attachments/assets/df6dd7b7-395a-4288-9767-3c667c5623e2">
+  <img width="700" alt="Loading_Analyzed_Round_GIF" src="https://github.com/user-attachments/assets/640523dd-1d60-4749-b358-34193acc12d9">
 </p>
 
 <p align="middle">
-  <img width="700" alt="Analyze_Folder" src="https://github.com/user-attachments/assets/4e3ec28f-89cc-421b-9dc0-fd3606c14fee">
+  <img width="700" alt="Analyze_Folder" src="https://github.com/user-attachments/assets/6b5d88df-1583-43a4-b298-d5eb30735a2c">
 </p>
 
 <p align="middle">
-  <img width="700" alt="download_folder" src="https://github.com/user-attachments/assets/4c725176-3b0e-4c9f-8ab0-a935f6e0ffdd">
+  <img width="700" alt="download_folder" src="https://github.com/user-attachments/assets/f94bc807-02d5-4f28-bcea-a2187ce0dfc3">
 </p>
 
 <h3 align="center">
-  <a href="https://github.com/user-attachments/files/17159293/DEF_callouts.csv">Ex: DEF_callouts.csv</a>
+  <a href="https://github.com/user-attachments/files/17200793/DEF_callouts.csv">Ex: DEF_callouts.csv</a>
 </h3>
 
 ---
